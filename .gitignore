@@ -1,4 +1,4 @@
 data
 .venv
 .vscode
-demo.py
+duckdb_test.py

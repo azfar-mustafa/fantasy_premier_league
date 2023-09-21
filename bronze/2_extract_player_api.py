@@ -14,8 +14,9 @@ def convert_timestamp_to_myt():
     formatted_timestamp = myt_timestamp.strftime("%d%m%Y")
     return formatted_timestamp
 
-def read_file():
-    file_path = "data/raw/elements_05092023.json"  # Replace with your file path
+def read_file(file_path):
+    #file_path = "data/raw/elements_05092023.json"  # Replace with your file path
+    #file_path = "C:/Users/khair/project/fantasy_premier_league/data/bronze/fantasy_premier_league/player_metadata/19092023/player_metadata_19092023.json"
     with open(file_path, "r") as json_file:
         data = json.load(json_file)
     return data
@@ -33,7 +34,8 @@ def get_player_data(player_index):
     
 
 def create_folder(folder_date):
-    folder_name = f"data/raw/player_data/{folder_date}"
+    #folder_name = f"data/raw/player_data/{folder_date}"
+    folder_name = f"C:/Users/khair/project/fantasy_premier_league/data/bronze/fantasy_premier_league/player_data/{folder_date}"
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
         print(f"Folder '{folder_name}' created successfully.")
@@ -49,20 +51,23 @@ def create_player_file(player_index, player_data, file_date, folder_name):
     player_file_name = f"{folder_name}/{player_index}_{file_date}.json" 
     with open(player_file_name, 'w') as file: 
         json.dump(player_data, file, indent=4)
-
         print(f"{player_file_name} is created")
         time.sleep(5)
  
 
 if __name__ == "__main__":
     try:
-        main_json_file = read_file()
         current_date = convert_timestamp_to_myt()
+        file_name = f"player_metadata_{current_date}.json"
+        player_metadata_path = f"C:/Users/khair/project/fantasy_premier_league/data/bronze/fantasy_premier_league/player_metadata/{current_date}/{file_name}"
+        main_json_file = read_file(player_metadata_path)
         folder_name = create_folder(current_date)
+
         for id_player in main_json_file:
             player_id = id_player.get("id")
             print(f"Current player id: {player_id}")
             player_data = get_player_data(player_id)
             create_player_file(player_id, player_data, current_date, folder_name)
+            
     except  RequestException as e:
         print(f"An error occured {e}")
