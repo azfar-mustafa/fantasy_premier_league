@@ -64,7 +64,7 @@ def delete_silver_folder(folder_path):
 if __name__ == "__main__":
     all_dict = []
     current_date = convert_timestamp_to_myt()
-    bronze_file_directory = f"C:/Users/khair/project/fantasy_premier_league/data/bronze/fantasy_premier_league/current_season_history_data/{current_date}/"
+    bronze_file_directory = f"C:/Users/khair/project/fantasy_premier_league/data/bronze/fantasy_premier_league/player_data/{current_date}/"
     silver_file_directory = f"C:/Users/khair/project/fantasy_premier_league/data/silver/fantasy_premier_league/current_season_history_data/{current_date}/"
     silver_json_file = f"current_season_history_fixture_{current_date}.json"
     silver_parquet_file = f"current_season_history_fixture_{current_date}.parquet"
