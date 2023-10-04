@@ -4,6 +4,14 @@ import pytz
 from datetime import datetime
 import duckdb
 import shutil
+import configparser
+
+def get_file_path():
+    config = configparser.ConfigParser()
+    config.read('C:/Users/khair/project/fantasy_premier_league/config/config.ini')
+    bronze_folder_player_data = config['file_path']['BronzeFolderPlayerData']
+    silver_folder_current_season_history = config['file_path']['SilverFolderCurrentSeasonHistoryData']
+    return bronze_folder_player_data, silver_folder_current_season_history
 
 
 def convert_timestamp_to_myt():
@@ -64,8 +72,9 @@ def delete_silver_folder(folder_path):
 if __name__ == "__main__":
     all_dict = []
     current_date = convert_timestamp_to_myt()
-    bronze_file_directory = f"C:/Users/khair/project/fantasy_premier_league/data/bronze/fantasy_premier_league/player_data/{current_date}/"
-    silver_file_directory = f"C:/Users/khair/project/fantasy_premier_league/data/silver/fantasy_premier_league/current_season_history_data/{current_date}/"
+    bronze_folder_player_data, silver_folder_current_season_history = get_file_path()
+    bronze_file_directory = f"{bronze_folder_player_data}/{current_date}/"
+    silver_file_directory = f"{silver_folder_current_season_history}/{current_date}/"
     silver_json_file = f"current_season_history_fixture_{current_date}.json"
     silver_parquet_file = f"current_season_history_fixture_{current_date}.parquet"
     

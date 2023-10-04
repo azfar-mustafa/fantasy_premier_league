@@ -5,6 +5,15 @@ import pytz
 from datetime import datetime
 import duckdb
 import shutil
+import configparser
+
+
+def get_file_path():
+    config = configparser.ConfigParser()
+    config.read('C:/Users/khair/project/fantasy_premier_league/config/config.ini')
+    bronze_folder_player_data = config['file_path']['BronzeFolderPlayerData']
+    silver_folder_player_metadata = config['file_path']['SilverFolderPlayerMetadata']
+    return bronze_folder_player_data, silver_folder_player_metadata
 
 
 def convert_timestamp_to_myt():
@@ -49,9 +58,10 @@ def delete_silver_folder(folder_path):
 
 
 if __name__ == "__main__":
+    bronze_folder_player_data, silver_folder_player_metadata = get_file_path()
     current_date = convert_timestamp_to_myt()
-    bronze_file_directory = f"C:/Users/khair/project/fantasy_premier_league/data/bronze/fantasy_premier_league/player_metadata/{current_date}/"
-    silver_file_directory = f"C:/Users/khair/project/fantasy_premier_league/data/silver/fantasy_premier_league/player_metadata/{current_date}/"
+    bronze_file_directory = f"{bronze_folder_player_data}/{current_date}/"
+    silver_file_directory = f"{silver_folder_player_metadata}/{current_date}/"
     bronze_json_file = f"player_metadata_{current_date}.json"
     silver_parquet_file = f"player_metadata_{current_date}.parquet"
 

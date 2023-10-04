@@ -5,6 +5,15 @@ import pytz
 from datetime import datetime
 import duckdb
 import shutil
+import configparser
+
+
+def get_file_path():
+    config = configparser.ConfigParser()
+    config.read('C:/Users/khair/project/fantasy_premier_league/config/config.ini')
+    bronze_folder_team_metadata = config['file_path']['BronzeFolderTeamMetadata']
+    silver_folder_team_metadata = config['file_path']['SilverFolderTeamMetadata']
+    return bronze_folder_team_metadata, silver_folder_team_metadata
 
 
 def convert_timestamp_to_myt():
@@ -36,9 +45,10 @@ def create_folder(folder_name):
 #Add new column to combine first name & second name
 
 if __name__ == "__main__":
+    bronze_folder_team_metadata, silver_folder_team_metadata = get_file_path()
     current_date = convert_timestamp_to_myt()
-    bronze_file_directory = f"C:/Users/khair/project/fantasy_premier_league/data/bronze/fantasy_premier_league/teams_metadata/{current_date}/"
-    silver_file_directory = f"C:/Users/khair/project/fantasy_premier_league/data/silver/fantasy_premier_league/teams_metadata/{current_date}/"
+    bronze_file_directory = f"{bronze_folder_team_metadata}/{current_date}/"
+    silver_file_directory = f"{silver_folder_team_metadata}/{current_date}/"
     bronze_json_file = f"teams_metadata_{current_date}.json"
     silver_parquet_file = f"teams_metadata_{current_date}.parquet"
     create_folder(silver_file_directory)

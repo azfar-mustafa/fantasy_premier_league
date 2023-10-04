@@ -5,6 +5,16 @@ import pytz
 import os
 from requests.exceptions import RequestException
 from datetime import datetime
+import configparser
+
+
+def get_file_path():
+    config = configparser.ConfigParser()
+    config.read('C:/Users/khair/project/fantasy_premier_league/config/config.ini')
+    bronze_folder_player_data = config['file_path']['BronzeFolderPlayerData']
+    bronze_folder_player_metadata = config['file_path']['BronzeFolderPlayerMetadata']
+    return bronze_folder_player_data, bronze_folder_player_metadata
+
 
 def convert_timestamp_to_myt():
     current_utc_timestamp = datetime.utcnow()
@@ -15,8 +25,6 @@ def convert_timestamp_to_myt():
     return formatted_timestamp
 
 def read_file(file_path):
-    #file_path = "data/raw/elements_05092023.json"  # Replace with your file path
-    #file_path = "C:/Users/khair/project/fantasy_premier_league/data/bronze/fantasy_premier_league/player_metadata/19092023/player_metadata_19092023.json"
     with open(file_path, "r") as json_file:
         data = json.load(json_file)
     return data
@@ -33,9 +41,8 @@ def get_player_data(player_index):
         return None
     
 
-def create_folder(folder_date):
-    #folder_name = f"data/raw/player_data/{folder_date}"
-    folder_name = f"C:/Users/khair/project/fantasy_premier_league/data/bronze/fantasy_premier_league/player_data/{folder_date}"
+def create_folder(folder_date, bronze_folder_player_data):
+    folder_name = f"{bronze_folder_player_data}/{folder_date}"
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
         print(f"Folder '{folder_name}' created successfully.")
@@ -54,12 +61,14 @@ def create_player_file(player_index, player_data, file_date, folder_name):
         print(f"{player_file_name} is created")
         time.sleep(5)
  
+ #to check if folder exists, delete folder if exists 
 
 if __name__ == "__main__":
     try:
+        bronze_folder_player_data, bronze_folder_player_metadata = get_file_path()
         current_date = convert_timestamp_to_myt()
         file_name = f"player_metadata_{current_date}.json"
-        player_metadata_path = f"C:/Users/khair/project/fantasy_premier_league/data/bronze/fantasy_premier_league/player_metadata/{current_date}/{file_name}"
+        player_metadata_path = f"{bronze_folder_player_metadata}/{current_date}/{file_name}"
         main_json_file = read_file(player_metadata_path)
         folder_name = create_folder(current_date)
 

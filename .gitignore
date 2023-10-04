@@ -2,3 +2,4 @@ data
 .venv
 .vscode
 duckdb_test.py
+config
