@@ -29,7 +29,7 @@ def create_player_parquet_file(bronze_folder_path, bronze_file_name, silver_fold
     bronze_json_file_full_path = os.path.join(bronze_folder_path, bronze_file_name)
     silver_parquet_file_full_path = os.path.join(silver_folder_path, silver_file_name)
     duckdb.sql(f"CREATE TABLE player_metadata AS SELECT * FROM read_json_auto('{bronze_json_file_full_path}')")
-    duckdb.sql("CREATE TABLE player_metadata_trans_1 AS SELECT *, CONCAT(first_name, ' ', second_name) as full_name FROM player_metadata")
+    duckdb.sql("CREATE TABLE player_metadata_trans_1 AS SELECT *, CONCAT(first_name, ' ', second_name) as full_name, now_cost/10 as latest_price FROM player_metadata")
     duckdb.sql(f"COPY (SELECT * FROM player_metadata_trans_1) TO '{silver_parquet_file_full_path}' (FORMAT PARQUET)")
 
 
