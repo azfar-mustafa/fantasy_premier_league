@@ -4,6 +4,7 @@ from datetime import datetime
 import pytz
 import os
 import configparser
+import shutil
 
 
 def get_file_path():
@@ -18,14 +19,14 @@ def fetch_data(website_url):
         player_team_detail_url = website_url
         response = requests.get(player_team_detail_url, stream=True, timeout=2)
         data = response.json()
-        return data['events'], data['teams'], data['elements']
+        return data['events'], data['teams'], data['elements'], data['element_types']
     except Exception as e:
         print(e)
         return None
     
 
-def create_data(file_path, data):
-    with open(file_path, 'w') as file:
+def create_data(file_path, file_name_json, data):
+    with open(f"{file_path}\{file_name_json}", 'w') as file:
         json.dump(data, file, indent=4)
     print(f"{file_path} data is created")
 
@@ -40,24 +41,27 @@ def convert_timestamp_to_myt():
 
 
 def create_directory(folder_timestamp, data_type, bronze_folder):
-    create_folder = f"{bronze_folder}/{data_type}/{folder_timestamp}"
-    os.makedirs(create_folder)
-    print("Bronze folder is created")
-    return create_folder
+    folder_path = os.path.join(bronze_folder, data_type, folder_timestamp)
+    if os.path.exists(folder_path):
+        shutil.rmtree(folder_path)
+        print(f"Existing {folder_path} is deleted")
+    os.makedirs(folder_path)
+    return folder_path
 
 
 #to check if folder exists, delete folder if exists 
 
 if __name__ == "__main__":
     try:
-        metadata = ['events_metadata', 'teams_metadata', 'player_metadata']
+        metadata = ['events_metadata', 'teams_metadata', 'player_metadata', 'position_metadata']
         current_timestamp = convert_timestamp_to_myt()
         url_list = 'https://fantasy.premierleague.com/api/bootstrap-static/'
         bronze_folder = get_file_path()
-        events, teams, elements = fetch_data(url_list)
+        events, teams, player, position = fetch_data(url_list)
         zipped_api = zip(metadata, fetch_data(url_list))
-        for i,j in zipped_api:
-            folder_path = create_directory(current_timestamp, i, bronze_folder)
-            create_data(f"{folder_path}/{i}_{current_timestamp}.json", j)
+        for file_name,data in zipped_api:
+            folder_path = create_directory(current_timestamp, file_name, bronze_folder)
+            file_name_json = f"{file_name}_{current_timestamp}.json"
+            create_data(folder_path, file_name_json, data)
     except Exception as e:
         print(e)
