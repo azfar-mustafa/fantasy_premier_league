@@ -70,7 +70,7 @@ if __name__ == "__main__":
         file_name = f"player_metadata_{current_date}.json"
         player_metadata_path = f"{bronze_folder_player_metadata}/{current_date}/{file_name}"
         main_json_file = read_file(player_metadata_path)
-        folder_name = create_folder(current_date)
+        folder_name = create_folder(current_date, bronze_folder_player_data)
 
         for id_player in main_json_file:
             player_id = id_player.get("id")
