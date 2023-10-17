@@ -5,6 +5,16 @@ from datetime import datetime
 import duckdb
 import shutil
 import configparser
+import logging
+import time
+
+
+def configure_logging():
+    log_format = "%(asctime)s - %(levelname)s - %(message)s"
+    log_file_current_timestamp = time.strftime("%Y%m%d")
+    log_filename = f"3_transform_fixture_metadata_{log_file_current_timestamp}.log"
+    logging.basicConfig(filename=log_filename, encoding='utf-8', level=logging.INFO, format=log_format)
+
 
 def get_file_path():
     config = configparser.ConfigParser()
@@ -26,10 +36,10 @@ def convert_timestamp_to_myt():
 def check_dictionary_key(current_season_past_fixture):
      consistent_keys = all(d.keys() == current_season_past_fixture[0].keys() for d in current_season_past_fixture)
      if consistent_keys:
-        print("All dictionaries have consistent keys")
+        logging.info("All dictionaries have consistent keys")
         return True
      else:
-        print("Dictionaries have different keys")
+        logging.info("Dictionaries have different keys")
         return False
 
 
@@ -42,10 +52,10 @@ def create_history_fixture_json_file(json_data, folder_path, file_name):
 def create_folder(folder_name):
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
-        print(f"Folder '{folder_name}' created successfully.")
+        logging.info(f"Folder '{folder_name}' created successfully.")
         return folder_name
     else:
-        print(f"Folder '{folder_name}' already exists.")
+        logging.info(f"Folder '{folder_name}' already exists.")
         return None
 
 
@@ -60,16 +70,17 @@ def delete_json_file(silver_folder_path, json_file_name):
     silver_json_file_full_path = os.path.join(silver_folder_path, json_file_name)
     if os.path.exists(silver_json_file_full_path):
         os.remove(f"{silver_json_file_full_path}")
-        print("Json file is deleted")
+        logging.info("Json file is deleted")
 
 
 def delete_silver_folder(folder_path):
     if os.path.exists(folder_path):
         shutil.rmtree(folder_path)
-        print("Folder is deleted")
+        logging.info("Folder is deleted")
 
 
 if __name__ == "__main__":
+    configure_logging()
     all_dict = []
     current_date = convert_timestamp_to_myt()
     bronze_folder_player_data, silver_folder_current_season_history = get_file_path()

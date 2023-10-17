@@ -6,6 +6,15 @@ from datetime import datetime
 import duckdb
 import shutil
 import configparser
+import logging
+import time
+
+
+def configure_logging():
+    log_format = "%(asctime)s - %(levelname)s - %(message)s"
+    log_file_current_timestamp = time.strftime("%Y%m%d")
+    log_filename = f"6_transform_position_metadata_{log_file_current_timestamp}.log"
+    logging.basicConfig(filename=log_filename, encoding='utf-8', level=logging.INFO, format=log_format)
 
 
 def get_file_path():
@@ -36,10 +45,10 @@ def create_player_parquet_file(bronze_folder_path, bronze_file_name, silver_fold
 def create_folder(folder_name):
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
-        print(f"Folder '{folder_name}' created successfully.")
+        logging.info(f"Folder '{folder_name}' created successfully.")
         return folder_name
     else:
-        print(f"Folder '{folder_name}' already exists.")
+        logging.info(f"Folder '{folder_name}' already exists.")
         return None
     
 

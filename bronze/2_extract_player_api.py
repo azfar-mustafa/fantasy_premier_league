@@ -6,6 +6,14 @@ import os
 from requests.exceptions import RequestException
 from datetime import datetime
 import configparser
+import logging
+
+
+def configure_logging():
+    log_format = "%(asctime)s - %(levelname)s - %(message)s"
+    log_file_current_timestamp = time.strftime("%Y%m%d")
+    log_filename = f"2_extract_player_api_{log_file_current_timestamp}.log"
+    logging.basicConfig(filename=log_filename, encoding='utf-8', level=logging.INFO, format=log_format)
 
 
 def get_file_path():
@@ -37,7 +45,7 @@ def get_player_data(player_index):
         player_data = response.json()
         return player_data
     else:
-        print(f"Request failed with status code: {response.status_code}")
+        logging.error(f"Request failed with status code: {response.status_code}")
         return None
     
 
@@ -45,10 +53,10 @@ def create_folder(folder_date, bronze_folder_player_data):
     folder_name = f"{bronze_folder_player_data}/{folder_date}"
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
-        print(f"Folder '{folder_name}' created successfully.")
+        logging.info(f"Folder '{folder_name}' created successfully.")
         return folder_name
     else:
-        print(f"Folder '{folder_name}' already exists.")
+        logging.info(f"Folder '{folder_name}' already exists.")
         return None
 
     
@@ -58,13 +66,14 @@ def create_player_file(player_index, player_data, file_date, folder_name):
     player_file_name = f"{folder_name}/{player_index}_{file_date}.json" 
     with open(player_file_name, 'w') as file: 
         json.dump(player_data, file, indent=4)
-        print(f"{player_file_name} is created")
+        logging.info(f"{player_file_name} is created")
         time.sleep(5)
  
  #to check if folder exists, delete folder if exists 
 
 if __name__ == "__main__":
     try:
+        configure_logging()
         bronze_folder_player_data, bronze_folder_player_metadata = get_file_path()
         current_date = convert_timestamp_to_myt()
         file_name = f"player_metadata_{current_date}.json"
@@ -74,9 +83,9 @@ if __name__ == "__main__":
 
         for id_player in main_json_file:
             player_id = id_player.get("id")
-            print(f"Current player id: {player_id}")
+            logging.info(f"Current player id: {player_id}")
             player_data = get_player_data(player_id)
             create_player_file(player_id, player_data, current_date, folder_name)
             
     except  RequestException as e:
-        print(f"An error occured {e}")
+        logging.error(f"An error occured {e}")
