@@ -7,12 +7,13 @@ import duckdb
 import shutil
 import configparser
 import logging
+import time
 
 
 def configure_logging():
     log_format = "%(asctime)s - %(levelname)s - %(message)s"
     log_file_current_timestamp = time.strftime("%Y%m%d")
-    log_filename = f"3_transform_fixture_metadata_{log_file_current_timestamp}.log"
+    log_filename = f"4_transform_player_metadata_{log_file_current_timestamp}.log"
     logging.basicConfig(filename=log_filename, encoding='utf-8', level=logging.INFO, format=log_format)
 
 
@@ -66,6 +67,7 @@ def delete_silver_folder(folder_path):
 
 
 if __name__ == "__main__":
+    configure_logging()
     bronze_folder_player_metadata, silver_folder_player_metadata = get_file_path()
     current_date = convert_timestamp_to_myt()
     bronze_file_directory = f"{bronze_folder_player_metadata}/{current_date}/"
