@@ -13,7 +13,7 @@ import time
 def configure_logging():
     log_format = "%(asctime)s - %(levelname)s - %(message)s"
     log_file_current_timestamp = time.strftime("%Y%m%d")
-    log_filename = f"5_transform_team_metadata{log_file_current_timestamp}.log"
+    log_filename = f"5_transform_team_metadata_{log_file_current_timestamp}.log"
     logging.basicConfig(filename=log_filename, encoding='utf-8', level=logging.INFO, format=log_format)
 
 
@@ -54,6 +54,7 @@ def create_folder(folder_name):
 #Add new column to combine first name & second name
 
 if __name__ == "__main__":
+    configure_logging()
     bronze_folder_team_metadata, silver_folder_team_metadata = get_file_path()
     current_date = convert_timestamp_to_myt()
     bronze_file_directory = f"{bronze_folder_team_metadata}/{current_date}/"

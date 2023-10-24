@@ -53,6 +53,7 @@ def create_folder(folder_name):
     
 
 if __name__ == "__main__":
+    configure_logging()
     bronze_folder_element_types, silver_folder_player_position = get_file_path()
     current_date = convert_timestamp_to_myt()
     bronze_file_directory = f"{bronze_folder_element_types}/{current_date}/"
