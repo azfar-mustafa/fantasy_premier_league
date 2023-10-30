@@ -4,3 +4,4 @@ data
 duckdb_test.py
 config
 *.log
+*.txt
